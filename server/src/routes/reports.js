@@ -10,7 +10,7 @@ router.get('/summary', (req, res) => {
   const rows = db
     .prepare(
       `SELECT type, COALESCE(SUM(amount), 0) AS total
-       FROM transactions ${clause} GROUP BY type`
+       FROM transactions t ${clause} GROUP BY type`
     )
     .all(...params);
 

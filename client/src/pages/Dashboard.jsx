@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { api } from '../api/client.js';
 import { money, firstOfMonthISO, todayISO, monthKey, MONTH_NAMES } from '../lib/format.js';
-import { seriesColor, INCOME_COLOR, EXPENSE_COLOR } from '../lib/colors.js';
+import { seriesColor, INCOME_COLOR, EXPENSE_COLOR, chartTheme } from '../lib/colors.js';
 import { Card, Spinner, Empty } from '../components/ui.jsx';
 
 export default function Dashboard() {
@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-slate-800">Panel — {monthTitle()}</h1>
+      <h1 className="text-xl font-bold text-slate-100">Panel — {monthTitle()}</h1>
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -65,15 +65,20 @@ export default function Dashboard() {
                     paddingAngle={2}
                   >
                     {byCat.map((entry, i) => (
-                      <Cell key={i} fill={entry.color || seriesColor(i)} stroke="#fff" strokeWidth={2} />
+                      <Cell
+                        key={i}
+                        fill={entry.color || seriesColor(i)}
+                        stroke={chartTheme.surface}
+                        strokeWidth={2}
+                      />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v) => money(v)} />
+                  <Tooltip formatter={(v) => money(v)} {...chartTheme.tooltip} />
                 </PieChart>
               </ResponsiveContainer>
               <ul className="w-full space-y-1 text-sm">
                 {byCat.slice(0, 6).map((c, i) => (
-                  <li key={c.category_id ?? i} className="flex items-center justify-between gap-2">
+                  <li key={c.category_id ?? i} className="flex items-center justify-between gap-2 text-slate-200">
                     <span className="flex items-center gap-2">
                       <span
                         className="inline-block h-3 w-3 rounded-sm"
@@ -81,7 +86,7 @@ export default function Dashboard() {
                       />
                       {c.name}
                     </span>
-                    <span className="tabular-nums text-slate-500">
+                    <span className="tabular-nums text-slate-400">
                       {money(c.total)} · {c.percent}%
                     </span>
                   </li>
@@ -95,10 +100,10 @@ export default function Dashboard() {
         <Card title={`Evolución mensual ${new Date().getFullYear()}`}>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={monthly} margin={{ left: -10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e1e0d9" vertical={false} />
-              <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#898781' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#898781' }} width={50} />
-              <Tooltip formatter={(v) => money(v)} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+              <XAxis dataKey="label" tick={{ fontSize: 11, fill: chartTheme.axis }} />
+              <YAxis tick={{ fontSize: 11, fill: chartTheme.axis }} width={50} />
+              <Tooltip formatter={(v) => money(v)} cursor={{ fill: 'rgba(148,163,184,0.1)' }} {...chartTheme.tooltip} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar dataKey="income" name="Ingresos" fill={INCOME_COLOR} radius={[3, 3, 0, 0]} />
               <Bar dataKey="expense" name="Gastos" fill={EXPENSE_COLOR} radius={[3, 3, 0, 0]} />
@@ -119,12 +124,12 @@ export default function Dashboard() {
               return (
                 <li key={b.category_id}>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="font-medium text-slate-700">{b.name}</span>
-                    <span className="tabular-nums text-slate-500">
+                    <span className="font-medium text-slate-200">{b.name}</span>
+                    <span className="tabular-nums text-slate-400">
                       {money(b.spent)} / {money(b.budget)}
                     </span>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{
@@ -145,12 +150,12 @@ export default function Dashboard() {
 
 function StatTile({ label, value, tone }) {
   const tones = {
-    income: 'text-green-600',
-    expense: 'text-red-600',
-    balance: value >= 0 ? 'text-brand-600' : 'text-red-600',
+    income: 'text-green-400',
+    expense: 'text-red-400',
+    balance: value >= 0 ? 'text-brand-400' : 'text-red-400',
   };
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+    <div className="rounded-xl bg-slate-800 p-4 shadow-sm ring-1 ring-slate-700">
       <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</p>
       <p className={`mt-1 text-2xl font-bold tabular-nums ${tones[tone]}`}>{money(value)}</p>
     </div>

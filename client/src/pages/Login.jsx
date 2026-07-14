@@ -29,12 +29,12 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <div className="text-4xl">💰</div>
-          <h1 className="mt-2 text-2xl font-bold text-slate-800">GastosSeba</h1>
-          <p className="text-sm text-slate-500">Controlá tus gastos e ingresos</p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-100">GastosSeba</h1>
+          <p className="text-sm text-slate-400">Controlá tus gastos e ingresos</p>
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <div className="mb-4 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+        <div className="rounded-2xl bg-slate-800 p-6 shadow-sm ring-1 ring-slate-700">
+          <div className="mb-4 grid grid-cols-2 gap-1 rounded-lg bg-slate-900 p-1">
             {[
               ['login', 'Ingresar'],
               ['register', 'Crear cuenta'],
@@ -46,7 +46,7 @@ export default function Login() {
                   setError('');
                 }}
                 className={`rounded-md py-2 text-sm font-medium transition ${
-                  mode === m ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'
+                  mode === m ? 'bg-slate-700 text-brand-300 shadow-sm' : 'text-slate-400'
                 }`}
               >
                 {label}
@@ -75,7 +75,7 @@ export default function Login() {
               />
             </Field>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-red-400">{error}</p>}
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Procesando…' : mode === 'login' ? 'Ingresar' : 'Crear cuenta'}

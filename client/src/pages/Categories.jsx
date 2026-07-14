@@ -29,7 +29,7 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-slate-800">Categorías</h1>
+      <h1 className="text-xl font-bold text-slate-100">Categorías</h1>
 
       <CategoryGroup
         title="Gastos"
@@ -74,10 +74,10 @@ function CategoryGroup({ title, items, showBudget, onAdd, onEdit, onDelete }) {
       {items.length === 0 ? (
         <Empty>No hay categorías todavía.</Empty>
       ) : (
-        <ul className="divide-y divide-slate-50">
+        <ul className="divide-y divide-slate-700">
           {items.map((c) => (
             <li key={c.id} className="flex items-center justify-between py-2">
-              <span className="flex items-center gap-2 text-sm text-slate-700">
+              <span className="flex items-center gap-2 text-sm text-slate-200">
                 <span className="inline-block h-3.5 w-3.5 rounded-sm" style={{ background: c.color }} />
                 {c.name}
                 {showBudget && c.monthly_budget != null && (
@@ -87,13 +87,13 @@ function CategoryGroup({ title, items, showBudget, onAdd, onEdit, onDelete }) {
               <span>
                 <button
                   onClick={() => onEdit(c)}
-                  className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  className="rounded p-1 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
                 >
                   ✏️
                 </button>
                 <button
                   onClick={() => onDelete(c.id)}
-                  className="rounded p-1 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                  className="rounded p-1 text-slate-400 hover:bg-red-500/15 hover:text-red-400"
                 >
                   🗑️
                 </button>
@@ -157,7 +157,7 @@ function CategoryModal({ data, onClose, onSaved }) {
                 type="button"
                 onClick={() => setColor(c)}
                 className={`h-8 w-8 rounded-full ring-2 ${
-                  color === c ? 'ring-slate-800' : 'ring-transparent'
+                  color === c ? 'ring-white' : 'ring-transparent'
                 }`}
                 style={{ background: c }}
                 aria-label={c}
@@ -179,7 +179,7 @@ function CategoryModal({ data, onClose, onSaved }) {
           </Field>
         )}
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" onClick={onClose}>

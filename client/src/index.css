@@ -3,10 +3,15 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
 body {
-  @apply bg-slate-100 text-slate-900 antialiased;
+  @apply bg-slate-950 text-slate-100 antialiased;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Corrige el color del texto en date pickers nativos sobre fondo oscuro */
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
 }

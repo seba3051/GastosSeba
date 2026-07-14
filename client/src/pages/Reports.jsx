@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { api } from '../api/client.js';
 import { money, MONTH_NAMES, firstOfMonthISO, todayISO } from '../lib/format.js';
-import { seriesColor, INCOME_COLOR, EXPENSE_COLOR, BALANCE_COLOR } from '../lib/colors.js';
+import { seriesColor, INCOME_COLOR, EXPENSE_COLOR, BALANCE_COLOR, chartTheme } from '../lib/colors.js';
 import { Card, Select, Input, Button, Spinner, Empty } from '../components/ui.jsx';
 
 const TABS = [
@@ -19,15 +19,15 @@ export default function Reports() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold text-slate-800">Reportes</h1>
+      <h1 className="text-xl font-bold text-slate-100">Reportes</h1>
 
-      <div className="flex gap-1 overflow-x-auto rounded-lg bg-slate-100 p-1">
+      <div className="flex gap-1 overflow-x-auto rounded-lg bg-slate-900 p-1">
         {TABS.map(([key, label]) => (
           <button
             key={key}
             onClick={() => setTab(key)}
             className={`whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition ${
-              tab === key ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'
+              tab === key ? 'bg-slate-700 text-brand-300 shadow-sm' : 'text-slate-400'
             }`}
           >
             {label}
@@ -77,16 +77,16 @@ function ByCategory() {
               <PieChart>
                 <Pie data={data} dataKey="total" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={2}>
                   {data.map((entry, i) => (
-                    <Cell key={i} fill={entry.color || seriesColor(i)} stroke="#fff" strokeWidth={2} />
+                    <Cell key={i} fill={entry.color || seriesColor(i)} stroke={chartTheme.surface} strokeWidth={2} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => money(v)} />
+                <Tooltip formatter={(v) => money(v)} {...chartTheme.tooltip} />
               </PieChart>
             </ResponsiveContainer>
             <div className="w-full overflow-x-auto lg:w-1/2">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 text-left text-xs uppercase text-slate-400">
+                  <tr className="border-b border-slate-700 text-left text-xs uppercase text-slate-400">
                     <th className="py-2">Categoría</th>
                     <th className="py-2 text-right">Total</th>
                     <th className="py-2 text-right">%</th>
@@ -94,7 +94,7 @@ function ByCategory() {
                 </thead>
                 <tbody>
                   {data.map((d, i) => (
-                    <tr key={d.category_id ?? i} className="border-b border-slate-50">
+                    <tr key={d.category_id ?? i} className="border-b border-slate-800 text-slate-200">
                       <td className="py-2">
                         <span className="flex items-center gap-2">
                           <span className="inline-block h-3 w-3 rounded-sm" style={{ background: d.color || seriesColor(i) }} />
@@ -102,7 +102,7 @@ function ByCategory() {
                         </span>
                       </td>
                       <td className="py-2 text-right tabular-nums">{money(d.total)}</td>
-                      <td className="py-2 text-right tabular-nums text-slate-500">{d.percent}%</td>
+                      <td className="py-2 text-right tabular-nums text-slate-400">{d.percent}%</td>
                     </tr>
                   ))}
                 </tbody>
@@ -139,7 +139,7 @@ function Monthly() {
     <div className="space-y-4">
       <Card>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-500">Año</span>
+          <span className="text-sm text-slate-400">Año</span>
           <Select value={year} onChange={(e) => setYear(e.target.value)} className="w-32">
             {[currentYear, currentYear - 1, currentYear - 2].map((y) => (
               <option key={y} value={y}>
@@ -157,10 +157,10 @@ function Monthly() {
           <>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={months} margin={{ left: -10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e1e0d9" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#898781' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#898781' }} width={55} />
-                <Tooltip formatter={(v) => money(v)} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: chartTheme.axis }} />
+                <YAxis tick={{ fontSize: 11, fill: chartTheme.axis }} width={55} />
+                <Tooltip formatter={(v) => money(v)} cursor={{ fill: 'rgba(148,163,184,0.1)' }} {...chartTheme.tooltip} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="income" name="Ingresos" fill={INCOME_COLOR} radius={[3, 3, 0, 0]} />
                 <Bar dataKey="expense" name="Gastos" fill={EXPENSE_COLOR} radius={[3, 3, 0, 0]} />
@@ -168,10 +168,10 @@ function Monthly() {
             </ResponsiveContainer>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={months} margin={{ left: -10, top: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e1e0d9" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#898781' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#898781' }} width={55} />
-                <Tooltip formatter={(v) => money(v)} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: chartTheme.axis }} />
+                <YAxis tick={{ fontSize: 11, fill: chartTheme.axis }} width={55} />
+                <Tooltip formatter={(v) => money(v)} {...chartTheme.tooltip} />
                 <Line
                   type="monotone"
                   dataKey="balance"
@@ -262,10 +262,10 @@ function Compare() {
               <>
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={result.categories} margin={{ left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e1e0d9" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#898781' }} />
-                    <YAxis tick={{ fontSize: 11, fill: '#898781' }} width={55} />
-                    <Tooltip formatter={(v) => money(v)} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: chartTheme.axis }} />
+                    <YAxis tick={{ fontSize: 11, fill: chartTheme.axis }} width={55} />
+                    <Tooltip formatter={(v) => money(v)} cursor={{ fill: 'rgba(148,163,184,0.1)' }} {...chartTheme.tooltip} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar dataKey="periodA" name="Periodo A" fill={seriesColor(0)} radius={[3, 3, 0, 0]} />
                     <Bar dataKey="periodB" name="Periodo B" fill={seriesColor(1)} radius={[3, 3, 0, 0]} />
@@ -274,7 +274,7 @@ function Compare() {
                 <div className="mt-4 overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-slate-100 text-left text-xs uppercase text-slate-400">
+                      <tr className="border-b border-slate-700 text-left text-xs uppercase text-slate-400">
                         <th className="py-2">Categoría</th>
                         <th className="py-2 text-right">A</th>
                         <th className="py-2 text-right">B</th>
@@ -283,13 +283,13 @@ function Compare() {
                     </thead>
                     <tbody>
                       {result.categories.map((c) => (
-                        <tr key={c.name} className="border-b border-slate-50">
+                        <tr key={c.name} className="border-b border-slate-800 text-slate-200">
                           <td className="py-2">{c.name}</td>
                           <td className="py-2 text-right tabular-nums">{money(c.periodA)}</td>
                           <td className="py-2 text-right tabular-nums">{money(c.periodB)}</td>
                           <td
                             className={`py-2 text-right tabular-nums ${
-                              c.diff > 0 ? 'text-red-600' : c.diff < 0 ? 'text-green-600' : 'text-slate-400'
+                              c.diff > 0 ? 'text-red-400' : c.diff < 0 ? 'text-green-400' : 'text-slate-400'
                             }`}
                           >
                             {c.diff > 0 ? '+' : ''}
@@ -316,11 +316,11 @@ function RangeBar({ from, to, setFrom, setTo, children }) {
     <Card>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">Desde</span>
+          <span className="text-sm text-slate-400">Desde</span>
           <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-auto" />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">Hasta</span>
+          <span className="text-sm text-slate-400">Hasta</span>
           <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-auto" />
         </div>
         {children}
@@ -332,13 +332,13 @@ function RangeBar({ from, to, setFrom, setTo, children }) {
 function MiniStat({ label, value, delta }) {
   const tone = delta
     ? value > 0
-      ? 'text-red-600'
+      ? 'text-red-400'
       : value < 0
-        ? 'text-green-600'
-        : 'text-slate-500'
-    : 'text-slate-800';
+        ? 'text-green-400'
+        : 'text-slate-400'
+    : 'text-slate-100';
   return (
-    <div className="rounded-xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-200">
+    <div className="rounded-xl bg-slate-800 p-4 text-center shadow-sm ring-1 ring-slate-700">
       <p className="text-xs uppercase text-slate-400">{label}</p>
       <p className={`mt-1 text-lg font-bold tabular-nums ${tone}`}>
         {delta && value > 0 ? '+' : ''}

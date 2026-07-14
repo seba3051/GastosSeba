@@ -77,9 +77,9 @@ export default function TransactionForm({ open, onClose, onSaved, initial }) {
               className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                 form.type === t
                   ? t === 'expense'
-                    ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-green-600 bg-green-50 text-green-700'
-                  : 'border-slate-200 text-slate-500 hover:bg-slate-50'
+                    ? 'border-red-500 bg-red-500/15 text-red-300'
+                    : 'border-green-500 bg-green-500/15 text-green-300'
+                  : 'border-slate-600 text-slate-400 hover:bg-slate-700'
               }`}
             >
               {t === 'expense' ? '↓ Gasto' : '↑ Ingreso'}
@@ -131,7 +131,7 @@ export default function TransactionForm({ open, onClose, onSaved, initial }) {
           />
         </Field>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" onClick={onClose}>
