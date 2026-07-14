@@ -4,7 +4,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, '..', 'data');
+
+// La ubicación de la base se puede fijar con DATA_DIR (útil para montar un
+// volumen persistente en Docker/EasyPanel). Por defecto: server/data.
+const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });

@@ -60,7 +60,38 @@ necesitás abrir http://localhost:5173.
         └── main.jsx, App.jsx
 ```
 
+## Despliegue con Docker / EasyPanel
+
+El repo incluye un `Dockerfile` multi-stage que **compila el frontend y lo sirve desde el
+mismo backend Express**, exponiendo un único puerto. Ideal para EasyPanel con la opción
+"Dockerfile".
+
+### En EasyPanel
+
+1. Creá un servicio de tipo **App** apuntando a este repositorio Git.
+2. Método de build: **Dockerfile** (en la raíz del repo).
+3. **Puerto**: `3000` (el que expone el contenedor).
+4. **Variables de entorno**:
+   - `JWT_SECRET` → un valor largo y aleatorio (importante para producción).
+   - `PORT` → `3000` (ya viene por defecto).
+   - `DATA_DIR` → `/app/data` (ya viene por defecto).
+5. **Volumen persistente**: montá un volumen en `/app/data` para que la base SQLite
+   (`finances.db`) sobreviva a los redeploys. **Sin esto, perdés los datos en cada
+   despliegue.**
+
+Una vez levantado, la app queda disponible en el dominio que le asignes: el frontend en
+`/` y la API en `/api`, mismo origen (no hace falta configurar CORS ni URLs).
+
+### Probar la imagen localmente
+
+```bash
+docker build -t gastosseba .
+docker run -p 3000:3000 -e JWT_SECRET=cambiame -v gastosseba_data:/app/data gastosseba
+# App en http://localhost:3000
+```
+
 ## Notas
 
-- Base de datos SQLite en `server/data/finances.db` (se crea sola; está en `.gitignore`).
+- Base de datos SQLite en `DATA_DIR/finances.db` (por defecto `server/data/` en dev,
+  `/app/data/` en el contenedor). Se crea sola; está en `.gitignore`.
 - Moneda por defecto: formateo local. Cambiable en `client/src/lib/format.js`.
