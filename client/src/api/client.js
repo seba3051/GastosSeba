@@ -48,6 +48,7 @@ function qs(params = {}) {
 
 export const api = {
   // Auth
+  authStatus: () => request('GET', '/auth/status'),
   register: (email, password) => request('POST', '/auth/register', { email, password }),
   login: (email, password) => request('POST', '/auth/login', { email, password }),
 

@@ -1,5 +1,15 @@
 import jwt from 'jsonwebtoken';
 
+// En producción el secreto es obligatorio: con un valor por defecto conocido
+// cualquiera podría falsificar un token y acceder a los datos.
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error(
+    '\nFATAL: falta la variable de entorno JWT_SECRET.\n' +
+      'Configurala con un valor largo y aleatorio antes de iniciar la app.\n'
+  );
+  process.exit(1);
+}
+
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 export function signToken(userId) {

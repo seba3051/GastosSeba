@@ -14,6 +14,9 @@ import { authRequired } from './middleware/auth.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
+// Detrás del proxy de EasyPanel: permite leer la IP real del cliente (req.ip),
+// necesaria para el límite de intentos de login.
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 

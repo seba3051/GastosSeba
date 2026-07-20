@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { api } from '../api/client.js';
 import { Field, Input, Button } from '../components/ui.jsx';
 
 export default function Login() {
@@ -9,6 +10,15 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [canRegister, setCanRegister] = useState(false);
+
+  // Solo se ofrece crear cuenta si el servidor tiene el registro abierto.
+  useEffect(() => {
+    api
+      .authStatus()
+      .then((s) => setCanRegister(s.registrationOpen))
+      .catch(() => setCanRegister(false));
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -34,25 +44,27 @@ export default function Login() {
         </div>
 
         <div className="rounded-2xl bg-slate-800 p-6 shadow-sm ring-1 ring-slate-700">
-          <div className="mb-4 grid grid-cols-2 gap-1 rounded-lg bg-slate-900 p-1">
-            {[
-              ['login', 'Ingresar'],
-              ['register', 'Crear cuenta'],
-            ].map(([m, label]) => (
-              <button
-                key={m}
-                onClick={() => {
-                  setMode(m);
-                  setError('');
-                }}
-                className={`rounded-md py-2 text-sm font-medium transition ${
-                  mode === m ? 'bg-slate-700 text-brand-300 shadow-sm' : 'text-slate-400'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          {canRegister && (
+            <div className="mb-4 grid grid-cols-2 gap-1 rounded-lg bg-slate-900 p-1">
+              {[
+                ['login', 'Ingresar'],
+                ['register', 'Crear cuenta'],
+              ].map(([m, label]) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    setMode(m);
+                    setError('');
+                  }}
+                  className={`rounded-md py-2 text-sm font-medium transition ${
+                    mode === m ? 'bg-slate-700 text-brand-300 shadow-sm' : 'text-slate-400'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Field label="Email">
